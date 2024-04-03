@@ -1,15 +1,15 @@
-import Matter, { Sleeping } from 'matter-js';
-import Box from './components/Box';
-import Constants from './Constants';
-import Images from './Images';
+import Matter, { Sleeping } from "matter-js";
+import Box from "./components/Box";
+import Constants from "./Constants";
+import Images from "./Images";
 
 const randomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 const randomColor = () => {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
+  var letters = "0123456789ABCDEF";
+  var color = "#";
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
@@ -21,14 +21,14 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
   if (events.length) {
     Sleeping.set(entities.Farmer.body, false);
     for (let i = 0; i < events.length; i++) {
-      if (events[i].type === 'move-left') {
+      if (events[i].type === "move-left") {
         Matter.Body.applyForce(
           entities.Farmer.body,
           entities.Farmer.body.position,
           { x: -0.0005, y: 0 }
         );
       }
-      if (events[i].type === 'move-right') {
+      if (events[i].type === "move-right") {
         Matter.Body.applyForce(
           entities.Farmer.body,
           entities.Farmer.body.position,
@@ -51,14 +51,14 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
   Matter.Engine.update(engine, time.delta);
 
   Sleeping.set(entities.BoundaryB.body, false);
-  Matter.Events.on(engine, 'collisionStart', (event) => {
+  Matter.Events.on(engine, "collisionStart", (event) => {
     var pairs = event.pairs;
     var objA = pairs[0].bodyA;
     var objB = pairs[0].bodyB;
     var objALabel = pairs[0].bodyA.label;
     var objBLabel = pairs[0].bodyB.label;
 
-    if (objALabel === 'Apple' && objBLabel === 'BoundaryB') {
+    if (objALabel === "Apple" && objBLabel === "BoundaryB") {
       Matter.Body.setVelocity(entities.Apple.body, {
         x: 0,
         y: 0,
@@ -78,7 +78,7 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       });
     }
 
-    if (objALabel === 'Pineapple' && objBLabel === 'BoundaryB') {
+    if (objALabel === "Pineapple" && objBLabel === "BoundaryB") {
       Matter.Body.setVelocity(entities.Pineapple.body, {
         x: 0,
         y: 0,
@@ -98,7 +98,7 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       });
     }
 
-    if (objALabel === 'Strawberry' && objBLabel === 'BoundaryB') {
+    if (objALabel === "Strawberry" && objBLabel === "BoundaryB") {
       Matter.Body.setVelocity(entities.Strawberry.body, {
         x: 0,
         y: 0,
@@ -118,7 +118,27 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       });
     }
 
-    if (objALabel === 'Bomb' && objBLabel === 'BoundaryB') {
+    if (objALabel === "Mango" && objBLabel === "BoundaryB") {
+      Matter.Body.setVelocity(entities.Mango.body, {
+        x: 0,
+        y: 0,
+      });
+
+      // if (!objB.isSleeping) {
+      //   dispatch({ type: 'updateScore' });
+      // }
+      // Sleeping.set(objB, true);
+
+      Matter.Body.setPosition(entities.Mango.body, {
+        x: randomBetween(25, Constants.WINDOW_WIDTH - 25),
+        y: randomBetween(
+          Constants.WINDOW_HEIGHT / 3,
+          Constants.WINDOW_HEIGHT / 8
+        ),
+      });
+    }
+
+    if (objALabel === "Bomb" && objBLabel === "BoundaryB") {
       Matter.Body.setVelocity(entities.Bomb.body, {
         x: 0,
         y: 0,
@@ -138,9 +158,29 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       });
     }
 
-    if (objALabel === 'Farmer' && objBLabel === 'Apple') {
+    if (objALabel === "EnemyWorm" && objBLabel === "BoundaryB") {
+      Matter.Body.setVelocity(entities.EnemyWorm.body, {
+        x: 0,
+        y: 0,
+      });
+
+      // if (!objB.isSleeping) {
+      //   dispatch({ type: 'updateScore' });
+      // }
+      Sleeping.set(objB, true);
+
+      Matter.Body.setPosition(entities.EnemyWorm.body, {
+        x: randomBetween(25, Constants.WINDOW_WIDTH - 25),
+        y: randomBetween(
+          Constants.WINDOW_HEIGHT / 3,
+          Constants.WINDOW_HEIGHT / 8
+        ),
+      });
+    }
+
+    if (objALabel === "Farmer" && objBLabel === "Apple") {
       if (!objA.isSleeping) {
-        dispatch({ type: 'updateScore' });
+        dispatch({ type: "updateScore" });
       }
       Sleeping.set(objA, true);
 
@@ -155,9 +195,9 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       // dispatch({ type: 'gameOver' });
     }
 
-    if (objALabel === 'Farmer' && objBLabel === 'Pineapple') {
+    if (objALabel === "Farmer" && objBLabel === "Pineapple") {
       if (!objA.isSleeping) {
-        dispatch({ type: 'updateScore' });
+        dispatch({ type: "updateScore" });
       }
       Sleeping.set(objA, true);
 
@@ -172,9 +212,9 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       // dispatch({ type: 'gameOver' });
     }
 
-    if (objALabel === 'Farmer' && objBLabel === 'Strawberry') {
+    if (objALabel === "Farmer" && objBLabel === "Strawberry") {
       if (!objA.isSleeping) {
-        dispatch({ type: 'updateScore' });
+        dispatch({ type: "updateScore" });
       }
       Sleeping.set(objA, true);
 
@@ -188,7 +228,24 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       // dispatch({ type: 'gameOver' });
     }
 
-    if (objALabel === 'Farmer' && objBLabel === 'Bomb') {
+    if (objALabel === "Farmer" && objBLabel === "Mango") {
+      if (!objA.isSleeping) {
+        dispatch({ type: "updateScore" });
+      }
+      Sleeping.set(objA, true);
+
+      Matter.Body.setPosition(entities.Mango.body, {
+        x: randomBetween(25, Constants.WINDOW_WIDTH - 25),
+        y: randomBetween(
+          Constants.WINDOW_HEIGHT / 3,
+          Constants.WINDOW_HEIGHT / 8
+        ),
+      });
+
+      // dispatch({ type: 'gameOver' });
+    }
+
+    if (objALabel === "Farmer" && objBLabel === "Bomb") {
       entities.Farmer.extraOptions.image = Images.worm;
       // if (!objA.isSleeping) {
       //   dispatch({ type: 'updateScore' });
@@ -202,7 +259,24 @@ const Physics = (entities, { touches, events, dispatch, time }) => {
       //     Constants.WINDOW_HEIGHT / 8
       //   ),
       // });
-      dispatch({ type: 'gameOver' });
+      dispatch({ type: "gameOver" });
+    }
+
+    if (objALabel === "Farmer" && objBLabel === "EnemyWorm") {
+      entities.Farmer.extraOptions.image = Images.worm;
+      // if (!objA.isSleeping) {
+      //   dispatch({ type: 'updateScore' });
+      // }
+      // Sleeping.set(objA, true);
+
+      // Matter.Body.setPosition(entities.Planet.body, {
+      //   x: randomBetween(25, Constants.WINDOW_WIDTH - 25),
+      //   y: randomBetween(
+      //     Constants.WINDOW_HEIGHT / 3,
+      //     Constants.WINDOW_HEIGHT / 8
+      //   ),
+      // });
+      dispatch({ type: "gameOver" });
     }
   });
 
